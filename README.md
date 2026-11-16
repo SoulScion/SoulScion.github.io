@@ -34,7 +34,9 @@ MYSQL_DATABASE=games_catalog
 
 NOTE: If you have used mySQL before in order to run this database, you should alreaddy know the password. It's the same one you use to connect to the server in mySQL.
 
+
 ## Full Setup Process
+
 ## Option 1 - Using the MySQL Dump File:
 
 ### Step 1:
@@ -69,16 +71,55 @@ NOTE: If you have used mySQL before in order to run this database, you should al
 
 ### Step 5:
 
-- Go to a browswer and enter `http://localhost:8000` or whichever port number you used.
+- Go to a browser and enter `http://localhost:8000` or whichever port number you used.
 - The "Games Catalog" application should pop up and become interactable.
 
-## Details on All Interactions in Application:
+## Option 2 - Running the Import Scripts:
 
-- 1. Searching and Browsing Data:
+### Step 1:
+    - This method is not recommended.
+    - However, if you are having issues with Option 1, this is the alternative.
+
+    - Start by creating the .env file and then cloning the Repo:
+    - `git clone https://github.com/SoulScion/SoulScion.github.io.git`
+
+### Step 2:
+
+- Open the MySQL Client/Workbench and start a new connection.
+
+- Run this line in a new file or in the Workbench Terminal:
+    - `SOURCE schema.sql;`
+- If that doesn't work, you need to give it the full path to the file, something like:
+    - `SOURCE C:/Users/example/.../example/SoulScion.github.io/schema.sql;`
+
+### Step 3:
+
+- Navigate to the "info_imports" directory and then make sure you've installed the required python packages from above.
+- Then, you must run the python scripts in "info_imports" in this order in a terminal:
+
+```
+python collect_rawg.py
+python import_to_db.py
+python import_prices.py
+python import_socials.py
+python import_perspectives.py
+python import_dlcs.py
+```
+
+- After running the scripst, navigate to the backend directory and run:
+    - `python app.py` OR `python3 app.py`
+- Keep this backend Flask server running.
+
+- *From here, just follow Steps 4 and 5 from Option 1.*
+
+
+## All Interactions in Application:
+
+1. Searching and Browsing Data:
     - The main tab, labeld "Game Directory", of the applicaiton displays a table of all 500 video game entries in the catalog.
         - The search bar allows a user to find any game they desire within the catalog.
 
-- 2. Displaying Related Data:
+2. Displaying Related Data:
     - Double-clicking on any entry in the "Games Directory" tab provides a popup that gives a more detailed view of all relevant information about that entry within the database.
     - Additionally, the "Report" tab details two differnt summaries, the second one is based aroudn standlone games or rather, entries in the catalog that have no dlc. Entries that have no additional content for a game can greatly influence a potential buyer into purchasing different games, making this interesting infromation.
 
