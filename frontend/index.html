@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Games Catalog</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Games Catalog</h1>
+    <p class="subtitle">SoulScion Database Explorer</p>
+  </header>
+
+  <nav id="menu">
+    <button data-op="search">1. Search games</button>
+    <button data-op="profile">2. Game profile</button>
+    <button data-op="add-publisher">3. Add publisher</button>
+    <button data-op="update-copies">4. Update copies sold</button>
+    <button data-op="top-genres">5. Top genres by avg price</button>
+    <button data-op="no-dlc">6. Games with no DLCs</button>
+  </nav>
+
+  <main id="panel">
+    <p class="hint">Pick an operation above.</p>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
