@@ -8,20 +8,100 @@
 <body>
   <header>
     <h1>Games Catalog</h1>
-    <p class="subtitle">SoulScion Database Explorer</p>
+    <p class="subtitle">Databases Project - Cade Damron</p>
   </header>
 
-  <nav id="menu">
-    <button data-op="search">1. Search games</button>
-    <button data-op="profile">2. Game profile</button>
-    <button data-op="add-publisher">3. Add publisher</button>
-    <button data-op="update-copies">4. Update copies sold</button>
-    <button data-op="top-genres">5. Top genres by avg price</button>
-    <button data-op="no-dlc">6. Games with no DLCs</button>
+  <nav id="main-tabs">
+    <button class="tab-btn active" data-target="tab-games">Games Directory</button>
+    <button class="tab-btn" data-target="tab-modify">Modify Data</button>
+    <button class="tab-btn" data-target="tab-reports">Reports</button>
+    <button class="tab-btn" data-target="tab-bookmarks">Bookmarks</button>
   </nav>
 
-  <main id="panel">
-    <p class="hint">Pick an operation above.</p>
+  <main>
+    <!-- TAB 1: GAMES DIRECTORY -->
+    <section id="tab-games" class="tab-content active">
+      <div class="header-row">
+        <h2>All Games</h2>
+        <input type="text" id="main-search" placeholder="Filter by Title...">
+      </div>
+      <div id="games-table-container">
+        <p class="hint">Loading games...</p>
+      </div>
+    </section>
+
+    <!-- TAB 2: MODIFY DATA -->
+    <section id="tab-modify" class="tab-content">
+      <nav class="sub-tabs">
+        <button class="sub-tab-btn active" data-target="sub-pub">Publisher Addition</button>
+        <button class="sub-tab-btn" data-target="sub-dev">Developer Addition</button>
+        <button class="sub-tab-btn" data-target="sub-cop">Update Copies Sold</button>
+      </nav>
+      
+      <div id="sub-pub" class="sub-tab-content active">
+        <h2>Publisher Addition</h2>
+        <form id="f-add-pub"><input id="pub-name" placeholder="Publisher Name" required>
+          <button>Add</button></form>
+        <div id="out-pub"></div>
+
+        <div id="pub-table-container" style="margin-top: 2rem;"></div>
+      </div>
+
+      <div id="sub-dev" class="sub-tab-content">
+        <h2>Developer Addition</h2>
+        <form id="f-add-dev"><input id="dev-name" placeholder="Company Name" required>
+          <button>Add</button></form>
+        <div id="out-dev"></div>
+
+        <div id="dev-table-container" style="margin-top: 2rem;"></div>
+      </div>
+
+      <div id="sub-cop" class="sub-tab-content">
+        <h2>Copies Sold Update</h2>
+        <form id="f-up-cop">
+          <input id="gid" type="number" min="1" placeholder="Game ID" required>
+          <input id="cop" type="number" min="0" placeholder="Copies sold" required>
+          <button>Update</button>
+        </form>
+        <div id="out-cop"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: REPORTS -->
+    <section id="tab-reports" class="tab-content">
+      <nav class="sub-tabs">
+        <button class="sub-tab-btn active" data-target="sub-genres">Top Genres by Average Price</button>
+        <button class="sub-tab-btn" data-target="sub-dlc">Standalone Games</button>
+      </nav>
+
+      <div id="sub-genres" class="sub-tab-content active">
+        <h2>Top Genres by Average Price</h2>
+        <div id="out-genres">Loading...</div>
+      </div>
+
+      <div id="sub-dlc" class="sub-tab-content">
+        <h2>Standalone Games (No DLC)</h2>
+        <div id="out-dlc">Loading...</div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Bookmarks -->
+    <section id="tab-bookmarks" class="tab-content">
+      <div class="header-row">
+        <h2>Bookmarked Games</h2>
+      </div>
+      <div id="bookmarks-table-container">
+        <p class="hint">Loading Bookmarks...</p>
+      </div>
+    </section>
+
+    <!-- GAME PROFILE OVERLAY (Hidden by default) -->
+    <div id="profile-modal" class="modal hidden">
+      <div class="modal-content">
+        <button id="close-modal" class="close-btn">&times;</button>
+        <div id="profile-content">Loading...</div>
+      </div>
+    </div>
   </main>
 
   <script src="app.js"></script>

@@ -1,11 +1,17 @@
 # Games Catalog - Web Application
 
-A Github Pages (WIP) browser frontend, backed by a Flask and a MySQL API.
+A application that interacts with the mySQL databse, "games_catalog". 
+The database contains around 500 video game entires, however not every entry has every single colum of every table filled.
 
 
 ## Architecture
 
-Browser (HTML/JS) → Flask API → MySQL (`games_catalog`)
+- Frontend:
+    - HTML, CSS, Javascript
+- Backend:
+    - Python (Flask) API
+- Database:
+    - mySQL (`games_catalog`)
 
 ## Requirements
 
@@ -18,8 +24,6 @@ Browser (HTML/JS) → Flask API → MySQL (`games_catalog`)
 Create `.env` in the project root:
 
 ```
-RAWG_API_KEY=[Your Project API KEY]
-
 MYSQL_HOST=localhost
 MYSQL_PORT=3306
 MYSQL_USER=[Your Username (usualy "root")]
@@ -27,3 +31,5 @@ MYSQL_PASSWORD=[Your Password]
 MYSQL_DATABASE=games_catalog
 
 ```
+
+NOTE: If you have used mySQL before in order to run this database, you should alreaddy know the password. It's the same one you use to connect to the server in mySQL.

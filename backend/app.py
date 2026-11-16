@@ -1,12 +1,15 @@
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 import mysql.connector
-from db import get_db_connection
+from db_connect import get_db_connection
 
 app = Flask(__name__)
 
 # Allows for a static frontend to call this file
 CORS(app)
+
+
+# Main Page:
 
 def query(sql, params=(), dictionary=True):
     """Run a SELECT and return rows. Raises on DB error."""
@@ -33,6 +36,34 @@ def execute(sql, params=()):
         raise
     finally:
         conn.close()
+
+
+# Main Page:
+
+@app.get("/api/games/all")
+def all_games():
+    rows = query("""
+        SELECT 
+            g.game_id, 
+            g.title, 
+            g.earliest_release, 
+            p.publisher_name,
+            (SELECT d.company_name 
+             FROM game_credits gc 
+             JOIN developers d ON gc.developer_id = d.developer_id 
+             WHERE gc.game_id = g.game_id 
+             LIMIT 1) AS developer_name,
+            (SELECT pl.platform_name 
+             FROM game_availability ga 
+             JOIN platforms pl ON ga.platform_id = pl.platform_id 
+             WHERE ga.game_id = g.game_id 
+             ORDER BY pl.release_date ASC 
+             LIMIT 1) AS platform_name
+        FROM games g
+        LEFT JOIN publishers p ON g.publisher_id = p.publisher_id
+        ORDER BY g.game_id ASC
+    """)
+    return jsonify(rows)
 
 
 # Searching:
@@ -146,6 +177,39 @@ def add_developer():
         return jsonify({"error": str(e)}), 500
 
 
+
+
+# Grabbing and Deleting Publishers:
+@app.get("/api/publishers")
+def get_publishers():
+    # Order by publisher_id DESC so newest additions appear at the top
+    rows = query("SELECT publisher_id, publisher_name FROM publishers ORDER BY publisher_id DESC")
+    return jsonify(rows)
+
+@app.delete("/api/publishers/<int:publisher_id>")
+def delete_publisher(publisher_id):
+    try:
+        # Foreign key constraints might prevent deletion if a game uses this publisher
+        execute("DELETE FROM publishers WHERE publisher_id = %s", (publisher_id,))
+        return jsonify({"status": "deleted"})
+    except mysql.connector.Error:
+        return jsonify({"error": "Cannot delete: This publisher is linked to existing games."}), 409
+
+# Grabbing and Deleting Developers:
+@app.get("/api/developers")
+def get_developers():
+    rows = query("SELECT developer_id, company_name FROM developers ORDER BY developer_id DESC")
+    return jsonify(rows)
+
+@app.delete("/api/developers/<int:developer_id>")
+def delete_developer(developer_id):
+    try:
+        execute("DELETE FROM developers WHERE developer_id = %s", (developer_id,))
+        return jsonify({"status": "deleted"})
+    except mysql.connector.Error:
+        return jsonify({"error": "Cannot delete: This developer is linked to existing games."}), 409
+
+
 # Update the Copies Sold:
 
 @app.patch("/api/games/<int:game_id>/copies")
@@ -194,7 +258,15 @@ def top_genres():
 @app.get("/api/reports/no-dlc")
 def games_without_dlc():
     rows = query("""
-        SELECT g.game_id, g.title, p.publisher_name
+        SELECT 
+            g.game_id, 
+            g.title, 
+            p.publisher_name,
+            (SELECT d.company_name 
+             FROM game_credits gc 
+             JOIN developers d ON gc.developer_id = d.developer_id 
+             WHERE gc.game_id = g.game_id 
+             LIMIT 1) AS developer_name
         FROM games g
         LEFT JOIN dlcs d ON g.game_id = d.game_id
         LEFT JOIN publishers p ON g.publisher_id = p.publisher_id
